@@ -33,10 +33,8 @@ def create_spectral_array(note_1, note_2, number_of_overtones):
 		freq_2 = freq_new
 	return spectral_array
 
-def make_spectral_arpeggio_midi(spectral_array, time_step, repetitions):
-	mid = MidiFile(type=1)
-	dyad_track = MidiTrack()
-	mid.tracks.append(dyad_track)
+def make_spectral_arpeggio_midi(midi_track, spectral_array, time_step, repetitions):
+	
 
 	dyad_note_1 = mc_to_midi_and_pitchbend(spectral_array[0])
 	dyad_note_2 = mc_to_midi_and_pitchbend(spectral_array[1])
@@ -46,21 +44,61 @@ def make_spectral_arpeggio_midi(spectral_array, time_step, repetitions):
 	dyad_track.append(Message('note_off', note=dyad_note_1[0], time=dyad_duration))
 	dyad_track.append(Message('note_off', note=dyad_note_2[0], time=0))
 
-	arp_track = MidiTrack()
-	mid.tracks.append(arp_track)
 	for repetition in range(0, repetitions):
 		for note in range(2, len(spectral_array)):
 			new_note = mc_to_midi_and_pitchbend(spectral_array[note])
-			arp_track.append(Message('pitchwheel', pitch=new_note[1], time=0))
-			arp_track.append(Message('note_on', note=new_note[0], time=0))
-			arp_track.append(Message('note_off', note=new_note[0], time=time_step))
+			arp_track.append(Message('pitchwheel', channel=note, pitch=new_note[1], time=0))
+			arp_track.append(Message('note_on', channel=note, note=new_note[0], time=0))
+			arp_track.append(Message('note_off', channel=note, note=new_note[0], time=time_step))
 
-	mid.save('new_song.mid')
+mid = MidiFile(type=1)
+dyad_track = MidiTrack()
+mid.tracks.append(dyad_track)
+arp_track = MidiTrack()
+mid.tracks.append(arp_track)
 
-spectral_array = create_spectral_array(4700, 5000, 8)
-make_spectral_arpeggio_midi(spectral_array, 60, 6)
+spectral_array = create_spectral_array(4500, 5100, 4)
+make_spectral_arpeggio_midi(mid, spectral_array, 100, 6)
+
+spectral_array = create_spectral_array(4700, 5000, 4)
+make_spectral_arpeggio_midi(mid, spectral_array, 100, 2)
+
+spectral_array = create_spectral_array(4000, 4800, 4)
+make_spectral_arpeggio_midi(mid, spectral_array, 100, 3)
+
+spectral_array = create_spectral_array(4200, 5000, 4)
+make_spectral_arpeggio_midi(mid, spectral_array, 100, 3)
+
+spectral_array = create_spectral_array(4500, 5300, 4)
+make_spectral_arpeggio_midi(mid, spectral_array, 100, 2)
+
+spectral_array = create_spectral_array(4700, 5000, 5)
+make_spectral_arpeggio_midi(mid, spectral_array, 100, 4)
+
+spectral_array = create_spectral_array(4200, 5000, 6)
+make_spectral_arpeggio_midi(mid, spectral_array, 100, 4)
+
+spectral_array = create_spectral_array(4900, 5300, 3)
+make_spectral_arpeggio_midi(mid, spectral_array, 100, 2)
+
+spectral_array = create_spectral_array(4300, 5200, 2)
+make_spectral_arpeggio_midi(mid, spectral_array, 100, 3)
+
+spectral_array = create_spectral_array(4900, 5300, 2)
+make_spectral_arpeggio_midi(mid, spectral_array, 100, 8)
+
+spectral_array = create_spectral_array(4500, 5300, 5)
+make_spectral_arpeggio_midi(mid, spectral_array, 100, 8)
+
+spectral_array = create_spectral_array(4700, 5000, 7)
+make_spectral_arpeggio_midi(mid, spectral_array, 100, 4)
+
+spectral_array = create_spectral_array(4400, 4700, 4)
+make_spectral_arpeggio_midi(mid, spectral_array, 100, 12)
 
 
+
+mid.save('song4.mid')
 
 
 
