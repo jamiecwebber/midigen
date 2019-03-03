@@ -15,7 +15,7 @@ def f_to_mc(frequency):
 def mc_to_midi_and_pitchbend(midicents):
 	# assuming standard pitch bend range of +- 2 semitones
 	# assuming +8192/-8191 pitch bend unites, so 1 midicent = 40.96 pbu
-	midi_note = (midicents + 50) / 100
+	midi_note = int((midicents + 50) / 100)
 	pitchbend = (midicents - (midi_note * 100))*40.96
 	midi_values = [midi_note, int(pitchbend)]
 	return midi_values
@@ -57,48 +57,35 @@ mid.tracks.append(dyad_track)
 arp_track = MidiTrack()
 mid.tracks.append(arp_track)
 
+
+spectral_array = create_spectral_array(3300, 5100, 4)
+make_spectral_arpeggio_midi(mid, spectral_array, 100, 4)
+
 spectral_array = create_spectral_array(4500, 5100, 4)
-make_spectral_arpeggio_midi(mid, spectral_array, 100, 6)
-
-spectral_array = create_spectral_array(4700, 5000, 4)
-make_spectral_arpeggio_midi(mid, spectral_array, 100, 2)
-
-spectral_array = create_spectral_array(4000, 4800, 4)
-make_spectral_arpeggio_midi(mid, spectral_array, 100, 3)
-
-spectral_array = create_spectral_array(4200, 5000, 4)
-make_spectral_arpeggio_midi(mid, spectral_array, 100, 3)
-
-spectral_array = create_spectral_array(4500, 5300, 4)
-make_spectral_arpeggio_midi(mid, spectral_array, 100, 2)
-
-spectral_array = create_spectral_array(4700, 5000, 5)
 make_spectral_arpeggio_midi(mid, spectral_array, 100, 4)
 
-spectral_array = create_spectral_array(4200, 5000, 6)
+spectral_array = create_spectral_array(3100, 5400, 4)
 make_spectral_arpeggio_midi(mid, spectral_array, 100, 4)
 
-spectral_array = create_spectral_array(4900, 5300, 3)
-make_spectral_arpeggio_midi(mid, spectral_array, 100, 2)
 
-spectral_array = create_spectral_array(4300, 5200, 2)
-make_spectral_arpeggio_midi(mid, spectral_array, 100, 3)
-
-spectral_array = create_spectral_array(4900, 5300, 2)
-make_spectral_arpeggio_midi(mid, spectral_array, 100, 8)
-
-spectral_array = create_spectral_array(4500, 5300, 5)
-make_spectral_arpeggio_midi(mid, spectral_array, 100, 8)
-
-spectral_array = create_spectral_array(4700, 5000, 7)
+spectral_array = create_spectral_array(4300, 5400, 4)
 make_spectral_arpeggio_midi(mid, spectral_array, 100, 4)
 
-spectral_array = create_spectral_array(4400, 4700, 4)
-make_spectral_arpeggio_midi(mid, spectral_array, 100, 12)
+spectral_array = create_spectral_array(3400, 5300, 4)
+make_spectral_arpeggio_midi(mid, spectral_array, 100, 4)
+
+spectral_array = create_spectral_array(4600, 5300, 4)
+make_spectral_arpeggio_midi(mid, spectral_array, 100, 4)
 
 
+spectral_array = create_spectral_array(3300, 5000, 4)
+make_spectral_arpeggio_midi(mid, spectral_array, 100, 4)
 
-mid.save('song4.mid')
+spectral_array = create_spectral_array(4500, 5000, 4)
+make_spectral_arpeggio_midi(mid, spectral_array, 100, 4)
+
+
+mid.save('output/song6.mid')
 
 
 
