@@ -33,12 +33,14 @@ def create_spectral_array(note_1, note_2, number_of_overtones):
 		freq_2 = freq_new
 	return spectral_array
 
-def make_spectral_arpeggio_midi(midi_track, spectral_array, time_step, repetitions):
-	
+def make_spectral_arpeggio_midi(midi_file, spectral_array, time_step, repetitions):
+	# midi_file must be pre-defined with two tracks
 
 	dyad_note_1 = mc_to_midi_and_pitchbend(spectral_array[0])
 	dyad_note_2 = mc_to_midi_and_pitchbend(spectral_array[1])
 	dyad_duration = (len(spectral_array)-2)*time_step*repetitions
+	dyad_track = midi_file.tracks[0]
+	arp_track = midi_file.tracks[1]
 	dyad_track.append(Message('note_on', note=dyad_note_1[0], time=0))
 	dyad_track.append(Message('note_on', note=dyad_note_2[0], time=0))
 	dyad_track.append(Message('note_off', note=dyad_note_1[0], time=dyad_duration))
@@ -51,50 +53,10 @@ def make_spectral_arpeggio_midi(midi_track, spectral_array, time_step, repetitio
 			arp_track.append(Message('note_on', channel=note, note=new_note[0], time=0))
 			arp_track.append(Message('note_off', channel=note, note=new_note[0], time=time_step))
 
-mid = MidiFile(type=1)
-dyad_track = MidiTrack()
-mid.tracks.append(dyad_track)
-arp_track = MidiTrack()
-mid.tracks.append(arp_track)
+def midi_channels_to_tracks(midi_track):
 
-
-spectral_array = create_spectral_array(3300, 5100, 4)
-make_spectral_arpeggio_midi(mid, spectral_array, 100, 4)
-
-spectral_array = create_spectral_array(4500, 5100, 4)
-make_spectral_arpeggio_midi(mid, spectral_array, 100, 4)
-
-spectral_array = create_spectral_array(3100, 5400, 4)
-make_spectral_arpeggio_midi(mid, spectral_array, 100, 4)
-
-
-spectral_array = create_spectral_array(4300, 5400, 4)
-make_spectral_arpeggio_midi(mid, spectral_array, 100, 4)
-
-spectral_array = create_spectral_array(3400, 5300, 4)
-make_spectral_arpeggio_midi(mid, spectral_array, 100, 4)
-
-spectral_array = create_spectral_array(4600, 5300, 4)
-make_spectral_arpeggio_midi(mid, spectral_array, 100, 4)
-
-
-spectral_array = create_spectral_array(3300, 5000, 4)
-make_spectral_arpeggio_midi(mid, spectral_array, 100, 4)
-
-spectral_array = create_spectral_array(4500, 5000, 4)
-make_spectral_arpeggio_midi(mid, spectral_array, 100, 4)
-
-
-mid.save('output/song6.mid')
+def cycle_midi_channels(midi_track):
 
 
 
 
-
-
-# mid = MidiFile()
-# track = MidiTrack()
-# mid.tracks.append(track)
-
-
-# mid.save('new_song.mid')
