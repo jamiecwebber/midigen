@@ -49,13 +49,36 @@ def make_spectral_arpeggio_midi(midi_file, spectral_array, time_step, repetition
 	for repetition in range(0, repetitions):
 		for note in range(2, len(spectral_array)):
 			new_note = mc_to_midi_and_pitchbend(spectral_array[note])
-			arp_track.append(Message('pitchwheel', channel=note, pitch=new_note[1], time=0))
-			arp_track.append(Message('note_on', channel=note, note=new_note[0], time=0))
-			arp_track.append(Message('note_off', channel=note, note=new_note[0], time=time_step))
+			arp_track.append(Message('pitchwheel', channel=note - 1, pitch=new_note[1], time=0))
+			arp_track.append(Message('note_on', channel=note - 1, note=new_note[0], time=0))
+			arp_track.append(Message('note_off', channel=note - 1, note=new_note[0], time=time_step))
+
+def cycle_midi_channels(midi_track, n = 2):
+	# changes the midi channel with each pitchwheel message to avoid unintended pitch bends.
+	# a quirk - starts pitchbend track on second track
+	channel = 0
+	for msg in midi_track:
+		if msg.type == 'pitchwheel':
+			channel += 1
+			if channel == n:
+				channel = 0
+
+		msg.channel = channel
+
+def flatten_midi_channels(midi_track):
+	for msg in midi_track:
+		msg.channel = 0
+
+def increase_midi_channels(midi_track, n = 1):
+	for msg in midi_track:
+		msg.channel += n
 
 def midi_channels_to_tracks(midi_track):
+	# coming soon!!
+	return true
 
-def cycle_midi_channels(midi_track):
+
+
 
 
 
