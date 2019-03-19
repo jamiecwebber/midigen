@@ -60,11 +60,12 @@ def cycle_midi_channels(midi_track, n = 2):
 	for msg in midi_track:
 		if not msg.is_meta:
 			if msg.type == 'pitchwheel':
-				channel += 1
 				if channel == n:
 					channel = 0
+				channel += 1
 
-			msg.channel = channel
+			msg.channel = channel 
+
 
 def flatten_midi_channels(midi_track):
 	for msg in midi_track:
