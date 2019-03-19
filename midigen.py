@@ -58,25 +58,44 @@ def cycle_midi_channels(midi_track, n = 2):
 	# a quirk - starts pitchbend track on second track
 	channel = 0
 	for msg in midi_track:
-		if msg.type == 'pitchwheel':
-			channel += 1
-			if channel == n:
-				channel = 0
+		if not msg.is_meta:
+			if msg.type == 'pitchwheel':
+				channel += 1
+				if channel == n:
+					channel = 0
 
-		msg.channel = channel
+			msg.channel = channel
 
 def flatten_midi_channels(midi_track):
 	for msg in midi_track:
-		msg.channel = 0
+		if not msg.is_meta:
+			msg.channel = 0
 
 def increase_midi_channels(midi_track, n = 1):
 	for msg in midi_track:
-		msg.channel += n
+		if not msg.is_meta:
+			msg.channel += n
 
 def midi_channels_to_tracks(midi_track):
 	# coming soon!!
-	return true
-
+	new_file = MidiFile(type=1)
+	max_channel = 0
+	for msg in midi_track:
+		if not msg.is_meta:
+			if msg.channel > max_channel:
+				max_channel = msg.channel
+	for channel in range(max_channel):
+		new_track = MidiTrack()
+		new_file.tracks.append(new_track)
+		new_time = 0
+		for msg in midi_track:
+			if not msg.is_meta:
+				if msg.channel == channel:
+					new_track.append(msg.copy(channel=0, time=new_time))
+					new_time = 0
+				else:
+					new_time += msg.time
+	return new_file
 
 
 
