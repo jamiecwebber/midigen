@@ -98,6 +98,12 @@ def midi_channels_to_tracks(midi_track):
 					new_time += msg.time
 	return new_file
 
+def add_rests_between_notes(midi_track, rest_time):
+	for msg in midi_track:
+		if not msg.is_meta:
+			if msg.type == 'pitchwheel':
+				msg.time = rest_time
+
 
 
 
