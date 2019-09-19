@@ -11,7 +11,7 @@ import os
 
 
 # Create directory
-dirName = 'SpectraWithRests'
+dirName = 'SpectraWithRests_dropsecondnotebyoctave'
 noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
  
 try:
@@ -32,7 +32,7 @@ for base in range(12):
 		base_freq = (base + 12) * 100
 		treble_freq = base_freq + interval * 100
 
-		spectral_array = mg.create_spectral_array(base_freq, treble_freq, 10)
+		spectral_array = mg.create_spectral_array(base_freq, treble_freq, 10, 1, 0.5)
 		print(spectral_array)
 		mg.make_spectral_arpeggio_midi(mid, spectral_array, 100, 1)
 		mg.add_rests_between_notes(arp_track, 100)

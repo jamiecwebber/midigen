@@ -20,18 +20,19 @@ def mc_to_midi_and_pitchbend(midicents):
 	midi_values = [midi_note, int(pitchbend)]
 	return midi_values
 
-def create_spectral_array(note_1, note_2, number_of_overtones):
+def create_spectral_array(note_1, note_2, number_of_overtones, factor1 = 1, factor2 = 1):
 	# note_1 and note_2 are in midicents
 	freq_1 = mc_to_f(note_1)
 	freq_2 = mc_to_f(note_2)
 	spectral_array = [note_1, note_2]
 	for x in range(0, number_of_overtones):
-		freq_new = freq_1 + freq_2
+		freq_new = factor1 * freq_1 + factor2 * freq_2
 		midicents_new = f_to_mc(freq_new)
 		spectral_array.append(midicents_new)
 		freq_1 = freq_2
 		freq_2 = freq_new
 	return spectral_array
+
 
 def make_spectral_arpeggio_midi(midi_file, spectral_array, time_step, repetitions):
 	# midi_file must be pre-defined with two tracks
@@ -99,10 +100,14 @@ def midi_channels_to_tracks(midi_track):
 	return new_file
 
 def add_rests_between_notes(midi_track, rest_time):
+	first_note = True
 	for msg in midi_track:
 		if not msg.is_meta:
 			if msg.type == 'pitchwheel':
-				msg.time = rest_time
+				if not first_note:
+					msg.time = rest_time
+				else:
+					first_note = False
 
 
 
