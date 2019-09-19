@@ -20,12 +20,12 @@ def mc_to_midi_and_pitchbend(midicents):
 	midi_values = [midi_note, int(pitchbend)]
 	return midi_values
 
-def spectral_generator(note_1, note_2, factor_1=1, factor_2=1):
+def fibonacci_generator(note_1, note_2, factor_1=1, factor_2=1):
     freq_1 = mc_to_f(note_1)
     freq_2 = mc_to_f(note_2)
     while True:
         new_freq = freq_1*factor_1 + freq_2*factor_2
-        yield new_freq
+        yield f_to_mc(new_freq)
         freq_1 = freq_2
         freq_2 = new_freq
 
