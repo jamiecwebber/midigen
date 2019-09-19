@@ -20,7 +20,16 @@ def mc_to_midi_and_pitchbend(midicents):
 	midi_values = [midi_note, int(pitchbend)]
 	return midi_values
 
-def create_spectral_array(note_1, note_2, number_of_overtones, factor1 = 1, factor2 = 1):
+def spectral_generator(note_1, note_2, factor_1=1, factor_2=1):
+    freq_1 = mc_to_f(note_1)
+    freq_2 = mc_to_f(note_2)
+    while True:
+        new_freq = freq_1*factor_1 + freq_2*factor_2
+        yield new_freq
+        freq_1 = freq_2
+        freq_2 = new_freq
+
+def create_spectral_array(note_1, note_2, number_of_overtones, factor_1 = 1, factor_2 = 1):
 	# note_1 and note_2 are in midicents
 	freq_1 = mc_to_f(note_1)
 	freq_2 = mc_to_f(note_2)
