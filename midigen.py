@@ -23,24 +23,29 @@ def mc_to_midi_and_pitchbend(midicents):
 def fibonacci_generator(note_1, note_2, factor_1=1, factor_2=1):
     freq_1 = mc_to_f(note_1)
     freq_2 = mc_to_f(note_2)
+    yield note_1
+    yield note_2
     while True:
         new_freq = freq_1*factor_1 + freq_2*factor_2
         yield f_to_mc(new_freq)
         freq_1 = freq_2
         freq_2 = new_freq
 
-def create_spectral_array(note_1, note_2, number_of_overtones, factor_1 = 1, factor_2 = 1):
+#def create_spectral_array(generator, number_of_overtones):
 	# note_1 and note_2 are in midicents
-	freq_1 = mc_to_f(note_1)
-	freq_2 = mc_to_f(note_2)
-	spectral_array = [note_1, note_2]
-	for x in range(0, number_of_overtones):
-		freq_new = factor1 * freq_1 + factor2 * freq_2
-		midicents_new = f_to_mc(freq_new)
-		spectral_array.append(midicents_new)
-		freq_1 = freq_2
-		freq_2 = freq_new
-	return spectral_array
+    
+    
+    
+	#freq_1 = mc_to_f(note_1)
+	#freq_2 = mc_to_f(note_2)
+	#spectral_array = [note_1, note_2]
+	#for x in range(0, number_of_overtones):
+	#	freq_new = factor1 * freq_1 + factor2 * freq_2
+	#	midicents_new = f_to_mc(freq_new)
+	#	spectral_array.append(midicents_new)
+	#	freq_1 = freq_2
+	#	freq_2 = freq_new
+	#return spectral_array
 
 
 def make_spectral_arpeggio_midi(midi_file, spectral_array, time_step, repetitions):
