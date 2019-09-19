@@ -81,7 +81,7 @@ def fibonacci_generator(note_1, note_2, factor_1=1, factor_2=1, return_dyad=True
     # this series converges to a ratio of 1.618, the golden mean.
     # When converting back to midicents this will look like a repeating stack of 633c intervals.
     # factor_1 and factor_2 allow you to scale the two notes during addition, this
-    # changes the interval that the series 
+    # changes the interval that the series converges to.
     freq_1 = mc_to_f(note_1)
     freq_2 = mc_to_f(note_2)
     if return_dyad:
@@ -93,21 +93,12 @@ def fibonacci_generator(note_1, note_2, factor_1=1, factor_2=1, return_dyad=True
         freq_1 = freq_2
         freq_2 = new_freq
 
-#def create_spectral_array(generator, number_of_overtones):
+def create_spectral_array(generator, number_of_overtones):
 	# note_1 and note_2 are in midicents
-    
-    
-    
-	#freq_1 = mc_to_f(note_1)
-	#freq_2 = mc_to_f(note_2)
-	#spectral_array = [note_1, note_2]
-	#for x in range(0, number_of_overtones):
-	#	freq_new = factor1 * freq_1 + factor2 * freq_2
-	#	midicents_new = f_to_mc(freq_new)
-	#	spectral_array.append(midicents_new)
-	#	freq_1 = freq_2
-	#	freq_2 = freq_new
-	#return spectral_array
+    spectral_array = []
+    for _ in range(number_of_overtones):
+        spectral_array.append(next(generator))
+    return spectral_array
 
 
 def make_spectral_arpeggio_midi(midi_file, spectral_array, time_step, repetitions):
