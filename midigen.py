@@ -20,11 +20,12 @@ def mc_to_midi_and_pitchbend(midicents):
 	midi_values = [midi_note, int(pitchbend)]
 	return midi_values
 
-def fibonacci_generator(note_1, note_2, factor_1=1, factor_2=1):
+def fibonacci_generator(note_1, note_2, factor_1=1, factor_2=1, return_dyad=True):
     freq_1 = mc_to_f(note_1)
     freq_2 = mc_to_f(note_2)
-    yield note_1
-    yield note_2
+    if return_dyad:
+        yield note_1
+        yield note_2
     while True:
         new_freq = freq_1*factor_1 + freq_2*factor_2
         yield f_to_mc(new_freq)
@@ -93,7 +94,6 @@ def increase_midi_channels(midi_track, n = 1):
 			msg.channel += n
 
 def midi_channels_to_tracks(midi_track):
-	# coming soon!!
 	new_file = MidiFile(type=1)
 	max_channel = 0
 	for msg in midi_track:
