@@ -73,7 +73,15 @@ def midi_channels_to_tracks(midi_track):
 	return new_file
 
 
+## Spectral tools
+
 def fibonacci_generator(note_1, note_2, factor_1=1, factor_2=1, return_dyad=True):
+    # generates a series of notes through frequency addition - these will be a subset
+    # of a harmonic series of which the two given notes are a part. With default settings
+    # this series converges to a ratio of 1.618, the golden mean.
+    # When converting back to midicents this will look like a repeating stack of 633c intervals.
+    # factor_1 and factor_2 allow you to scale the two notes during addition, this
+    # changes the interval that the series 
     freq_1 = mc_to_f(note_1)
     freq_2 = mc_to_f(note_2)
     if return_dyad:
