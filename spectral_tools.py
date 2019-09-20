@@ -4,7 +4,7 @@ Created on Thu Sep 19 16:33:12 2019
 
 @author: hurgdburg
 """
-
+from midigen import *
 
 ## Spectral tools
 
@@ -26,6 +26,29 @@ def fibonacci_generator(note_1, note_2, factor_1=1, factor_2=1, return_dyad=True
         freq_1 = freq_2
         freq_2 = new_freq
 
+class fib_gen_class:
+    def __init__(self, note_1, note_2, factor_1=1, factor_2=1, return_dyad=True):
+        self.note_1 = note_1
+        self.note_2 = note_2
+        self.freq_1 = mc_to_f(self.note_1)
+        self.freq_2 = mc_to_f(self.note_2)
+        self.factor_1 = factor_1
+        self.factor_2 = factor_2
+        self.return_dyad = return_dyad
+    
+    def __next__(self):
+        new_freq = self.freq_1*self.factor_1 + self.freq_2*self.factor_2
+        self.freq_1, self.freq_2 = self.freq_2, new_freq
+        return f_to_mc(new_freq)
+    
+    def drop_octave(self):
+        self.freq_1 = self.freq_1 / 2
+        self.freq_2 = self.freq_2 / 2
+    
+
+        
+        
+        
 def create_spectral_array(generator, number_of_overtones):
 	# note_1 and note_2 are in midicents
     spectral_array = []
