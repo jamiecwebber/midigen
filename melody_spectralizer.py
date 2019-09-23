@@ -10,7 +10,7 @@ from mido import MidiFile
 from midigen import *
 from spectral_tools import *
 
-mid = MidiFile('formidigennosus.mid')
+mid = MidiFile('formidigen.mid')
 
 
 class Spectralizer():
@@ -18,9 +18,8 @@ class Spectralizer():
     def __init__(self):
         self.dyad_note = None
         self.generator = None
+        self.notes_on = {}
     
-    
-        
     def handle_msg(self, msg):
         if msg.channel == 1:
             if msg.velocity > 0:
@@ -34,10 +33,23 @@ class Spectralizer():
     
     def change_generator (self, note_1, note_2):
         note_1, note_2 = note_1*100, note_2*100
+        if note_1 > note_2:
+            note_1, note_2 = note_2, note_1
+        
         print(f'{note_1}, {note_2}')
     
     def adjust_note(self, msg):
+        
+        print(self.notes_on)
+        print(msg.note)
+        if msg.velocity == 0:
+            msg.note = self.notes_on[msg.note]
+            del self.notes_on[msg.note-20]
+        else:
+            self.notes_on[msg.note] = msg.note+20
         print(msg)
+            
+        
         
     
 
