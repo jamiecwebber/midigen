@@ -19,7 +19,7 @@ def mc_to_midi_and_pitchbend(midicents):
 	# assuming +8192/-8191 pitch bend unites, so 1 midicent = 40.96 pbu
 	midi_note = int((midicents + 50) / 100)
 	pitchbend = (midicents - (midi_note * 100))*40.96
-	midi_values = (midi_note, int(pitchbend))
+	midi_values = (midi_note, int(pitchbend))   # if this is broken change this back to a list
 	return midi_values
 
 ## midi channel handling

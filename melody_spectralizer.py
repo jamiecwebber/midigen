@@ -30,9 +30,10 @@ class Spectralizer():
                 else:
                     self.change_generator(self.dyad_note, msg.note)
                     self.dyad_note = None
+            return [msg]
         else:
-            msg = self.adjust_note(msg)
-        return 
+            messages = self.adjust_note(msg)
+            return messages
     
     def change_generator (self, note_1, note_2):
         note_1, note_2 = note_1*100, note_2*100
@@ -43,11 +44,15 @@ class Spectralizer():
     
     def adjust_note(self, msg):
         if msg.velocity == 0:
-            msg.note = self.notes_on.pop(msg.note)
+            msg.note = self.notes_on.pop(msg.note)[0]
+            return [msg]
         else:
-            self.notes_on[msg.note] = self.calculate_note(msg)
-            msg.note = 
-            
+            self.notes_on[msg.note] = self.calculate_note(msg)  
+            msg.note = self.notes_on[msg.note][0] # gives back a tuple of midi note and pitchbend units, so [0] is the midi note
+            messages = [msg, Message('pitchwheel', channel=msg.channel, pitch=self.notes_on[msg.note][1], time=0)]
+                # see how this works with pitch bend message 0 ticks AFTER pitch note. ???
+            return messages
+    
     def calculate_note(self, msg):
         print('calculate note')
         midicents = msg.note * 100 - 50
