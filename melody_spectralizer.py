@@ -47,9 +47,11 @@ class Spectralizer():
             msg.note = self.notes_on.pop(msg.note)[0]
             return [msg]
         else:
-            self.notes_on[msg.note] = self.calculate_note(msg)  
-            msg.note = self.notes_on[msg.note][0] # gives back a tuple of midi note and pitchbend units, so [0] is the midi note
-            messages = [msg, Message('pitchwheel', channel=msg.channel, pitch=self.notes_on[msg.note][1], time=0)]
+            oldnote = msg.note
+            self.notes_on[oldnote] = self.calculate_note(msg)
+            msg.note = self.notes_on[oldnote][0] # gives back a tuple of midi note and pitchbend units, so [0] is the midi note
+            print(self.notes_on)
+            messages = [msg, Message('pitchwheel', channel=msg.channel, pitch=self.notes_on[oldnote][1], time=0)]
                 # see how this works with pitch bend message 0 ticks AFTER pitch note. ???
             return messages
     
@@ -73,6 +75,6 @@ for i, track in enumerate(mid.tracks):
         for message in messages:
             midi_track.append(message)
 
-output_midi.save('formidigenout.mid')
+output_midi.save('formidigenoutspectra.mid')
             
 
