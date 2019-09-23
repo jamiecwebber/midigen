@@ -55,7 +55,8 @@ class Spectralizer():
     
     def calculate_note(self, msg):
         print('calculate note')
-        midicents = msg.note * 100 - 50
+        # midicents = msg.note * 100 - 50   # drops everything 50 cents
+        midicents = next(self.generator)
         return mc_to_midi_and_pitchbend(midicents)
     
 
