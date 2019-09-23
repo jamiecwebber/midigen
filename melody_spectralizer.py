@@ -43,11 +43,15 @@ class Spectralizer():
             msg.note = self.notes_on.pop(msg.note)
         else:
             self.notes_on[msg.note] = self.calculate_note(msg)
+            write_note(msg)
             
     def calculate_note(self, msg):
         print('calculate note')
         return 50
-        
+    
+
+def write_note(msg):
+    print(f'write note {msg.note} to file');
         
     
 
