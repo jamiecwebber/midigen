@@ -24,19 +24,19 @@ class Spectralizer():
     def handle_msg(self, msg):
         if msg.channel == 1:
             print(msg)
-            if dyad_note == None:
-                dyad_note = msg.note
+            if self.dyad_note == None:
+                self.dyad_note = msg.note
             else:
-                self.change_generator(dyad_note, msg.note)
-                dyad_note = None
+                self.change_generator(self.dyad_note, msg.note)
+                self.dyad_note = None
         else:
             self.adjust_note(msg)
     
     def change_generator (self, note_1, note_2):
-        note_1, note_2 = [note_1, note_2]*100
+        note_1, note_2 = note_1*100, note_2*100
         print(f'{note_1}, {note_2}')
     
-    def adjust_note(msg):
+    def adjust_note(self, msg):
         print('blah')
         
     
