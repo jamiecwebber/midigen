@@ -35,20 +35,18 @@ class Spectralizer():
         note_1, note_2 = note_1*100, note_2*100
         if note_1 > note_2:
             note_1, note_2 = note_2, note_1
-        
-        print(f'{note_1}, {note_2}')
+        self.generator = fib_gen_class(note_1, note_2, return_dyad=False)
+        print(self.generator)
     
     def adjust_note(self, msg):
-        
-        print(self.notes_on)
-        print(msg.note)
         if msg.velocity == 0:
-            msg.note = self.notes_on[msg.note]
-            del self.notes_on[msg.note-20]
+            msg.note = self.notes_on.pop(msg.note)
         else:
-            self.notes_on[msg.note] = msg.note+20
-        print(msg)
+            self.notes_on[msg.note] = self.calculate_note(msg)
             
+    def calculate_note(self, msg):
+        print('calculate note')
+        return 50
         
         
     
