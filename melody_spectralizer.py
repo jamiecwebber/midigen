@@ -53,19 +53,23 @@ class Spectralizer():
         else:
             oldnote = msg.note
             
-            # automatically alternates detuned notes between 4 midi channels
-            msg.channel = self.current_channel
-            self.current_channel += 1
-            if self.current_channel > self.cycle_channels:
-                self.current_channel = 1
+            msg = handle_channels(msg)
             
             self.notes_on[oldnote] = self.calculate_note(msg)
             self.notes_on[oldnote].append(msg.channel)
-            msg.note = self.notes_on[oldnote][0] # gives back a tuple of midi note and pitchbend units, so [0] is the midi note
+            msg.note = self.notes_on[oldnote][0] # [0] is the midi note
             print(self.notes_on)
             messages = [msg, Message('pitchwheel', channel=msg.channel, pitch=self.notes_on[oldnote][1], time=0)]
                 # see how this works with pitch bend message 0 ticks AFTER pitch note. ???
             return messages
+        
+    def handle_channels(self, msg):
+        # automatically alternates detuned notes between self.cycle_channels midi channels
+        msg.channel = self.current_channel
+        self.current_channel += 1
+        if self.current_channel > self.cycle_channels:
+            self.current_channel = 1
+        return msg
     
     def calculate_note(self, msg):
         print('calculate note')
@@ -75,6 +79,9 @@ class Spectralizer():
         self.prev_note = msg.note
         midicents = next(self.generator)
         return mc_to_midi_and_pitchbend(midicents)
+    
+    def calculate_interval(self, note_1, note_2):
+        print('calculate interval')
     
 
 spec = Spectralizer()
