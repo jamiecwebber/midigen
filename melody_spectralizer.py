@@ -56,7 +56,8 @@ class Spectralizer():
             # automatically alternates detuned notes between 4 midi channels
             msg.channel = self.current_channel
             self.current_channel += 1
-            self.current_channel = (self.current_channel % self.cycle_channels) + 1
+            if self.current_channel > self.cycle_channels:
+                self.current_channel = 1
             
             self.notes_on[oldnote] = self.calculate_note(msg)
             self.notes_on[oldnote].append(msg.channel)
@@ -89,6 +90,6 @@ for i, track in enumerate(mid.tracks):
         for message in messages:
             midi_track.append(message)
 
-output_midi.save('formidigenoutspectracontourresetprevnotecyclechannels.mid')
+output_midi.save('formidigenoutspectracontourresetprevnotecyclechannelsfixed.mid')
             
 
