@@ -21,6 +21,7 @@ class Spectralizer():
         self.dyad_note = None
         self.generator = None
         self.cycle_channels = cycle_channels
+        self.current_channel = 1
         self.notes_on = {}   # dictionary of tuples
         self.prev_note = 0   # not idea but this is for calculate_note to work right
     
@@ -47,11 +48,18 @@ class Spectralizer():
     
     def adjust_note(self, msg):
         if msg.velocity == 0:
-            msg.note = self.notes_on.pop(msg.note)[0]
+            msg.note, _, msg.channel = self.notes_on.pop(msg.note)
             return [msg]
         else:
             oldnote = msg.note
+            
+            # automatically alternates detuned notes between 4 midi channels
+            msg.channel = self.current_channel
+            self.current_channel += 1
+            self.current_channel = (self.current_channel % self.cycle_channels) + 1
+            
             self.notes_on[oldnote] = self.calculate_note(msg)
+            self.notes_on[oldnote].append(msg.channel)
             msg.note = self.notes_on[oldnote][0] # gives back a tuple of midi note and pitchbend units, so [0] is the midi note
             print(self.notes_on)
             messages = [msg, Message('pitchwheel', channel=msg.channel, pitch=self.notes_on[oldnote][1], time=0)]
@@ -81,6 +89,6 @@ for i, track in enumerate(mid.tracks):
         for message in messages:
             midi_track.append(message)
 
-output_midi.save('formidigenoutspectracontourresetprevnote.mid')
+output_midi.save('formidigenoutspectracontourresetprevnotecyclechannels.mid')
             
 
