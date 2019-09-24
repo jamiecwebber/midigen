@@ -10,25 +10,28 @@ from mido import MidiFile
 from midigen import *
 from spectral_tools import *
 
-mid = MidiFile('formidigen.mid')
+mid = MidiFile('formidigenbasschanzero.mid')
 output_midi = MidiFile()
 midi_track = MidiTrack()
 output_midi.tracks.append(midi_track)
 
 class Spectralizer():
     # processes each message of the MIDI
-    def __init__(self):
+    def __init__(self, cycle_channels = 4):
         self.dyad_note = None
         self.generator = None
+        self.cycle_channels = cycle_channels
         self.notes_on = {}   # dictionary of tuples
+        self.prev_note = 0   # not idea but this is for calculate_note to work right
     
     def handle_msg(self, msg):
-        if msg.channel == 1:
+        if msg.channel == 0:
             if msg.velocity > 0:
                 if self.dyad_note == None:
                     self.dyad_note = msg.note
                 else:
                     self.change_generator(self.dyad_note, msg.note)
+                    self.prev_note = 0  # so that generators always start at the correct octave above chord
                     self.dyad_note = None
             return [msg]
         else:
@@ -58,6 +61,9 @@ class Spectralizer():
     def calculate_note(self, msg):
         print('calculate note')
         # midicents = msg.note * 100 - 50   # drops everything 50 cents
+        if msg.note < self.prev_note:
+            self.generator.drop_octave()
+        self.prev_note = msg.note
         midicents = next(self.generator)
         return mc_to_midi_and_pitchbend(midicents)
     
@@ -75,6 +81,6 @@ for i, track in enumerate(mid.tracks):
         for message in messages:
             midi_track.append(message)
 
-output_midi.save('formidigenoutspectra.mid')
+output_midi.save('formidigenoutspectracontourresetprevnote.mid')
             
 
