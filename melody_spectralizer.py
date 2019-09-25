@@ -23,6 +23,7 @@ class Spectralizer():
         self.cycle_channels = cycle_channels
         self.current_channel = 1
         self.notes_on = {}   # dictionary of tuples
+        self.backlog = []    # list of skipped-over spectral notes
         self.prev_note = 0   # not idea but this is for calculate_note to work right
     
     def handle_msg(self, msg):
@@ -46,6 +47,14 @@ class Spectralizer():
         self.generator = fib_gen_class(note_1, note_2, return_dyad=False)
         print(self.generator)
     
+    def handle_channels(self, msg):
+        # automatically alternates detuned notes between self.cycle_channels midi channels
+        msg.channel = self.current_channel
+        self.current_channel += 1
+        if self.current_channel > self.cycle_channels:
+            self.current_channel = 1
+        return msg
+    
     def adjust_note(self, msg):
         if msg.velocity == 0:
             msg.note, _, msg.channel = self.notes_on.pop(msg.note)
@@ -53,7 +62,7 @@ class Spectralizer():
         else:
             oldnote = msg.note
             
-            msg = handle_channels(msg)
+            msg = self.handle_channels(msg)
             
             self.notes_on[oldnote] = self.calculate_note(msg)
             self.notes_on[oldnote].append(msg.channel)
@@ -63,13 +72,7 @@ class Spectralizer():
                 # see how this works with pitch bend message 0 ticks AFTER pitch note. ???
             return messages
         
-    def handle_channels(self, msg):
-        # automatically alternates detuned notes between self.cycle_channels midi channels
-        msg.channel = self.current_channel
-        self.current_channel += 1
-        if self.current_channel > self.cycle_channels:
-            self.current_channel = 1
-        return msg
+   
     
     def calculate_note(self, msg):
         print('calculate note')
@@ -77,11 +80,29 @@ class Spectralizer():
         if msg.note < self.prev_note:
             self.generator.drop_octave()
         self.prev_note = msg.note
+        
+        #for note in self.backlog:
+        #    if check_interval(match_octave(note, msg.note*100)):
+                
+                
         midicents = next(self.generator)
         return mc_to_midi_and_pitchbend(midicents)
     
-    def calculate_interval(self, note_1, note_2):
-        print('calculate interval')
+    def match_octave(self, spectral_note, given_note):
+        while spectral_note - given_note > 600:
+            spectral_note -= 1200
+        while spectral_note - given_note < -600:
+            spectral_note += 1200
+        return(spectral_note, given_note)
+    
+    def check_interval(self, backlog_note, given_note, interval=100):
+        # returns True if the absolute difference between the two notes is
+        # smaller than the given interval
+        print('blah')
+        
+        
+        
+    
     
 
 spec = Spectralizer()
