@@ -84,13 +84,17 @@ class Spectralizer():
         notes = self.backlog.copy()
         for note in notes:
             candidate_note = match_octave(note, msg.note*100)
-            if abs(candidate_note - (msg.note*100)) < 150:
-                # hardcoded value of 1.5 semitones of maximum adjustment
+            if check_interval(candidate_note, msg.note*100):
                 self.backlog.pop(note)
-                return candidate_note
-
-        midicents = next(self.generator)
-        return mc_to_midi_and_pitchbend(midicents)
+                return mc_to_midi_and_pitchbend(candidate_note)
+        while True:
+            next_note = next(self.generator)
+            candidate_note = match_octave(next_note, msg.note*100)
+            if next_note > candidate_note:
+                self.generator.drop_octave()
+            if check_interval(candidate_note, msg.note*100):
+                return mc_to_midi_and_pitchbend(candidate_note)
+            self.backlog.append(candidate_note)
     
     def match_octave(self, spectral_note, given_note):
         while spectral_note - given_note > 600:
@@ -98,6 +102,10 @@ class Spectralizer():
         while spectral_note - given_note < -600:
             spectral_note += 1200
         return spectral_note
+    
+    def check_interval(self, spectral_note, given_note, interval=150):
+        # hardcoded value of 1.5 semitones of maximum adjustment
+        
     
         
         
