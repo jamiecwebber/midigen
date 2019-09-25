@@ -10,7 +10,9 @@ from mido import MidiFile
 from midigen import *
 from spectral_tools import *
 
-mid = MidiFile('four-chord.mid')
+filename = 'flutes'
+
+mid = MidiFile(f'{filename}.mid')
 output_midi = MidiFile()
 midi_track = MidiTrack()
 output_midi.tracks.append(midi_track)
@@ -129,6 +131,6 @@ for i, track in enumerate(mid.tracks):
         for message in messages:
             midi_track.append(message)
 
-output_midi.save('four-chord-spec.mid')
+output_midi.save(f'{filename}-spec.mid')
             
 
