@@ -75,16 +75,20 @@ class Spectralizer():
    
     
     def calculate_note(self, msg):
-        print('calculate note')
-        # midicents = msg.note * 100 - 50   # drops everything 50 cents
+        # this bit just keeps the generator from getting too large of values,
+        # not essential to the thing working
         if msg.note < self.prev_note:
             self.generator.drop_octave()
         self.prev_note = msg.note
         
-        #for note in self.backlog:
-        #    if check_interval(match_octave(note, msg.note*100)):
-                
-                
+        notes = self.backlog.copy()
+        for note in notes:
+            candidate_note = match_octave(note, msg.note*100)
+            if abs(candidate_note - (msg.note*100)) < 150:
+                # hardcoded value of 1.5 semitones of maximum adjustment
+                self.backlog.pop(note)
+                return candidate_note
+
         midicents = next(self.generator)
         return mc_to_midi_and_pitchbend(midicents)
     
@@ -93,12 +97,8 @@ class Spectralizer():
             spectral_note -= 1200
         while spectral_note - given_note < -600:
             spectral_note += 1200
-        return(spectral_note, given_note)
+        return spectral_note
     
-    def check_interval(self, backlog_note, given_note, interval=100):
-        # returns True if the absolute difference between the two notes is
-        # smaller than the given interval
-        print('blah')
         
         
         
@@ -118,6 +118,6 @@ for i, track in enumerate(mid.tracks):
         for message in messages:
             midi_track.append(message)
 
-output_midi.save('formidigenoutspectracontourresetprevnotecyclechannelsfixed.mid')
+#output_midi.save('formidigenoutspectracontourresetprevnotecyclechannelsfixed.mid')
             
 
