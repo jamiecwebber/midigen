@@ -10,7 +10,7 @@ from mido import MidiFile
 from midigen import *
 from spectral_tools import *
 
-mid = MidiFile('formidigenbasschanzero.mid')
+mid = MidiFile('four-chord.mid')
 output_midi = MidiFile()
 midi_track = MidiTrack()
 output_midi.tracks.append(midi_track)
@@ -129,6 +129,6 @@ for i, track in enumerate(mid.tracks):
         for message in messages:
             midi_track.append(message)
 
-output_midi.save('adjustedwithininterval.mid')
+output_midi.save('four-chord-spec.mid')
             
 
