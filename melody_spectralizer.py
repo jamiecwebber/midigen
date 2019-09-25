@@ -105,6 +105,7 @@ class Spectralizer():
     
     def check_interval(self, spectral_note, given_note, interval=150):
         # hardcoded value of 1.5 semitones of maximum adjustment
+        return abs(spectral_note - given_note) < interval
         
     
         
