@@ -45,6 +45,7 @@ class Spectralizer():
         if note_1 > note_2:
             note_1, note_2 = note_2, note_1
         self.generator = fib_gen_class(note_1, note_2, return_dyad=False)
+        self.backlog = [] # clear backlog
         print(self.generator)
     
     def handle_channels(self, msg):
@@ -83,18 +84,19 @@ class Spectralizer():
         
         notes = self.backlog.copy()
         for note in notes:
-            candidate_note = match_octave(note, msg.note*100)
-            if check_interval(candidate_note, msg.note*100):
-                self.backlog.pop(note)
+            candidate_note = self.match_octave(note, msg.note*100)
+            if self.check_interval(candidate_note, msg.note*100):
+                self.backlog.remove(note)
                 return mc_to_midi_and_pitchbend(candidate_note)
         while True:
             next_note = next(self.generator)
-            candidate_note = match_octave(next_note, msg.note*100)
+            candidate_note = self.match_octave(next_note, msg.note*100)
             if next_note > candidate_note:
                 self.generator.drop_octave()
-            if check_interval(candidate_note, msg.note*100):
+            if self.check_interval(candidate_note, msg.note*100):
                 return mc_to_midi_and_pitchbend(candidate_note)
             self.backlog.append(candidate_note)
+            print(self.backlog)
     
     def match_octave(self, spectral_note, given_note):
         while spectral_note - given_note > 600:
@@ -127,6 +129,6 @@ for i, track in enumerate(mid.tracks):
         for message in messages:
             midi_track.append(message)
 
-#output_midi.save('formidigenoutspectracontourresetprevnotecyclechannelsfixed.mid')
+output_midi.save('adjustedwithininterval.mid')
             
 
