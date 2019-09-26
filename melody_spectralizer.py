@@ -28,6 +28,9 @@ class Spectralizer():
         self.backlog = []    # list of skipped-over spectral notes
         self.prev_note = 0   # not idea but this is for calculate_note to work right
     
+    def __repr__(self):
+        return f'Spectralizer(cycle_channels={self.cycle_channels})'
+    
     def handle_msg(self, msg):
         if msg.channel == 0:
             if msg.velocity > 0:
@@ -119,6 +122,7 @@ class Spectralizer():
     
 
 spec = Spectralizer()
+spec
 
 for i, track in enumerate(mid.tracks):
     dyad_note = None  # value of the first of the two notes of the dyad 
