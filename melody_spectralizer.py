@@ -10,7 +10,7 @@ from mido import MidiFile
 from midigen import *
 from spectral_tools import *
 
-filename = 'flutes'
+filename = 'simplepiano'
 
 mid = MidiFile(f'{filename}.mid')
 output_midi = MidiFile()

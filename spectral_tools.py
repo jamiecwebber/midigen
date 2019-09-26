@@ -41,6 +41,9 @@ class fib_gen_class:
         self.freq_1, self.freq_2 = self.freq_2, new_freq
         return f_to_mc(new_freq)
     
+    def __repr__(self):
+        return f'fib_gen_class({self.note_1}, {self.note_2}, factor_1={self.factor_1}. factor_2={self.factor_2}, return_dyad={self.return_dyad})'
+    
     def drop_octave(self):
         self.freq_1 = self.freq_1 / 2
         self.freq_2 = self.freq_2 / 2
