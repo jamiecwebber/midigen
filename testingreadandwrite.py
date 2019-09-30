@@ -14,8 +14,8 @@ from spectral_tools import *
 
 filename = 'improvnohold'
 
-mid = MidiFile(f'{filename}.mid')
-output_midi = MidiFile()
+mid = MidiFile(f'{filename}.mid' )
+output_midi = MidiFile(ticks_per_beat=960)
 midi_track = MidiTrack()
 output_midi.tracks.append(midi_track)
 
