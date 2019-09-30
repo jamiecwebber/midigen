@@ -74,7 +74,16 @@ class Spectralizer():
             
             msg = self.handle_channels(msg)
             
-            self.notes_on[oldnote] = self.calculate_note(msg)
+            if oldnote in self.last_n:
+                # move note back to end of list
+                self.last_n.remove(oldnote)
+                self.last_n.append(oldnote)
+                self.notes_on[oldnote] = self.values[oldnote]
+            else:  
+                self.notes_on[oldnote] = self.calculate_note(msg)
+                self.values[oldnote] = self.notes_on[oldnote]
+                self.last_n.append(oldnote)
+                
             self.notes_on[oldnote].append(msg.channel)
             msg.note = self.notes_on[oldnote][0] # [0] is the midi note
             # print(self.notes_on)
