@@ -10,7 +10,7 @@ from mido import MidiFile
 from midigen import *
 from spectral_tools import *
 
-filename = 'simplepiano'
+filename = 'improvnohold'
 
 mid = MidiFile(f'{filename}.mid')
 output_midi = MidiFile()
@@ -19,7 +19,7 @@ output_midi.tracks.append(midi_track)
 
 class Spectralizer():
     # processes each message of the MIDI
-    def __init__(self, cycle_channels = 4):
+    def __init__(self, cycle_channels = 8):
         self.dyad_note = None
         self.generator = None
         self.cycle_channels = cycle_channels
@@ -62,8 +62,9 @@ class Spectralizer():
         return msg
     
     def adjust_note(self, msg):
-        if msg.velocity == 0:
-            msg.note, _, msg.channel = self.notes_on.pop(msg.note)
+        if msg.velocity == 0 or msg.type == 'note_off':
+            if msg.note in self.notes_on.keys():
+                msg.note, _, msg.channel = self.notes_on.pop(msg.note)
             return [msg]
         else:
             oldnote = msg.note
@@ -122,7 +123,6 @@ class Spectralizer():
     
 
 spec = Spectralizer()
-spec
 
 for i, track in enumerate(mid.tracks):
     dyad_note = None  # value of the first of the two notes of the dyad 
@@ -135,6 +135,6 @@ for i, track in enumerate(mid.tracks):
         for message in messages:
             midi_track.append(message)
 
-output_midi.save(f'{filename}-spec.mid')
+output_midi.save(f'{filename}-spec8chan.mid')
             
 
