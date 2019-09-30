@@ -13,7 +13,7 @@ from spectral_tools import *
 filename = 'improvnohold'
 
 mid = MidiFile(f'{filename}.mid')
-output_midi = MidiFile()
+output_midi = MidiFile(ticks_per_beat=960)
 midi_track = MidiTrack()
 output_midi.tracks.append(midi_track)
 
@@ -137,6 +137,6 @@ for i, track in enumerate(mid.tracks):
             print(f'out: {message}')
             midi_track.append(message)
 
-# output_midi.save(f'{filename}-spec8chan.mid')
+output_midi.save(f'{filename}-spec8chan960tpb.mid')
             
 
