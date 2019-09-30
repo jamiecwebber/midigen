@@ -130,6 +130,8 @@ class Spectralizer():
     
     def check_interval(self, spectral_note, given_note, interval=150):
         # hardcoded value of 1.5 semitones of maximum adjustment
+        if given_note > spectral_note:
+            return False
         return abs(spectral_note - given_note) < interval
         
     
@@ -154,6 +156,6 @@ for i, track in enumerate(mid.tracks):
             print(f'out: {message}')
             midi_track.append(message)
 
-output_midi.save(f'{filename}-spec-3note-ignorerepeateddyad.mid')
+output_midi.save(f'{filename}-spec-3note-onlysharpen.mid')
             
 
