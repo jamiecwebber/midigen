@@ -74,7 +74,7 @@ class Spectralizer():
             self.notes_on[oldnote] = self.calculate_note(msg)
             self.notes_on[oldnote].append(msg.channel)
             msg.note = self.notes_on[oldnote][0] # [0] is the midi note
-            print(self.notes_on)
+            # print(self.notes_on)
             messages = [msg, Message('pitchwheel', channel=msg.channel, pitch=self.notes_on[oldnote][1], time=0)]
                 # see how this works with pitch bend message 0 ticks AFTER pitch note. ???
             return messages
@@ -102,7 +102,7 @@ class Spectralizer():
             if self.check_interval(candidate_note, msg.note*100):
                 return mc_to_midi_and_pitchbend(candidate_note)
             self.backlog.append(candidate_note)
-            print(self.backlog)
+            # print(self.backlog)
     
     def match_octave(self, spectral_note, given_note):
         while spectral_note - given_note > 600:
@@ -129,12 +129,14 @@ for i, track in enumerate(mid.tracks):
     
     print(f'Track {i}: {track.name}')
     for msg in track:
+        print(f'in : {msg}')
         messages = [msg]
         if msg.type == 'note_on' or msg.type == 'note_off':
             messages = spec.handle_msg(msg)
         for message in messages:
+            print(f'out: {message}')
             midi_track.append(message)
 
-output_midi.save(f'{filename}-spec8chan.mid')
+# output_midi.save(f'{filename}-spec8chan.mid')
             
 
