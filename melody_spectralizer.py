@@ -67,6 +67,7 @@ class Spectralizer():
     def adjust_note(self, msg):
         if msg.velocity == 0 or msg.type == 'note_off':
             if msg.note in self.notes_on.keys():
+                print(self.notes_on[msg.note])
                 msg.note, _, msg.channel = self.notes_on.pop(msg.note)
             return [msg]
         else:
@@ -83,8 +84,10 @@ class Spectralizer():
                 self.notes_on[oldnote] = self.calculate_note(msg)
                 self.values[oldnote] = self.notes_on[oldnote]
                 self.last_n.append(oldnote)
-                
-            self.notes_on[oldnote].append(msg.channel)
+            if len(self.notes_on[oldnote]) == 3:
+                self.notes_on[oldnote][2] = msg.channel
+            else:
+                self.notes_on[oldnote].append(msg.channel)
             msg.note = self.notes_on[oldnote][0] # [0] is the midi note
             # print(self.notes_on)
             messages = [msg, Message('pitchwheel', channel=msg.channel, pitch=self.notes_on[oldnote][1], time=0)]
@@ -149,6 +152,6 @@ for i, track in enumerate(mid.tracks):
             print(f'out: {message}')
             midi_track.append(message)
 
-#output_midi.save(f'{filename}-spec8chan960tpb.mid')
+output_midi.save(f'{filename}-spec-6note.mid')
             
 
