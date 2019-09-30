@@ -6,6 +6,7 @@ Created on Mon Sep 23 15:21:53 2019
 """
 
 from mido import MidiFile
+from collections import deque
 
 from midigen import *
 from spectral_tools import *
@@ -19,12 +20,14 @@ output_midi.tracks.append(midi_track)
 
 class Spectralizer():
     # processes each message of the MIDI
-    def __init__(self, cycle_channels = 8):
+    def __init__(self, cycle_channels = 8, n_back = 6):
         self.dyad_note = None
         self.generator = None
         self.cycle_channels = cycle_channels
         self.current_channel = 1
+        self.last_n = deque(maxlen=n_back) # deque of ints
         self.notes_on = {}   # dictionary of tuples
+        self.values = {}     # dictionary of values of notes, used for n_back
         self.backlog = []    # list of skipped-over spectral notes
         self.prev_note = 0   # not idea but this is for calculate_note to work right
     
@@ -137,6 +140,6 @@ for i, track in enumerate(mid.tracks):
             print(f'out: {message}')
             midi_track.append(message)
 
-output_midi.save(f'{filename}-spec8chan960tpb.mid')
+#output_midi.save(f'{filename}-spec8chan960tpb.mid')
             
 
