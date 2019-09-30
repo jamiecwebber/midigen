@@ -11,7 +11,7 @@ from collections import deque
 from midigen import *
 from spectral_tools import *
 
-filename = 'improvnohold'
+filename = 'improvfull'
 
 mid = MidiFile(f'{filename}.mid')
 output_midi = MidiFile(ticks_per_beat=960)
@@ -20,9 +20,10 @@ output_midi.tracks.append(midi_track)
 
 class Spectralizer():
     # processes each message of the MIDI
-    def __init__(self, cycle_channels = 8, n_back = 6):
+    def __init__(self, cycle_channels = 8, n_back = 3):
         self.dyad_note = None
         self.generator = None
+        self.current_dyad = [None,None]
         self.cycle_channels = cycle_channels
         self.current_channel = 1
         self.last_n = deque(maxlen=n_back) # deque of ints
@@ -38,8 +39,10 @@ class Spectralizer():
         if msg.channel == 0:
             if msg.velocity > 0:
                 if self.dyad_note == None:
-                    self.dyad_note = msg.note
+                    if msg.note not in self.current_dyad:
+                        self.dyad_note = msg.note
                 else:
+                    self.current_dyad = [self.dyad_note, msg.note]
                     self.change_generator(self.dyad_note, msg.note)
                     self.prev_note = 0  # so that generators always start at the correct octave above chord
                     self.dyad_note = None
@@ -91,7 +94,6 @@ class Spectralizer():
             msg.note = self.notes_on[oldnote][0] # [0] is the midi note
             # print(self.notes_on)
             messages = [msg, Message('pitchwheel', channel=msg.channel, pitch=self.notes_on[oldnote][1], time=0)]
-                # see how this works with pitch bend message 0 ticks AFTER pitch note. ???
             return messages
         
    
@@ -152,6 +154,6 @@ for i, track in enumerate(mid.tracks):
             print(f'out: {message}')
             midi_track.append(message)
 
-output_midi.save(f'{filename}-spec-6note.mid')
+output_midi.save(f'{filename}-spec-3note-ignorerepeateddyad.mid')
             
 
