@@ -14,7 +14,7 @@ from spectral_tools import *
 
 filename = 'improvnohold'
 
-mid = MidiFile(f'{filename}.mid' )
+mid = MidiFile('blah.mid' )
 output_midi = MidiFile(ticks_per_beat=960)
 midi_track = MidiTrack()
 output_midi.tracks.append(midi_track)
@@ -23,9 +23,9 @@ output_midi.tracks.append(midi_track)
 for i, track in enumerate(mid.tracks):
     dyad_note = None  # value of the first of the two notes of the dyad 
     
-    print(f'Track {i}: {track.name}')
+    print('Track ')
     for msg in track:
         midi_track.append(msg)
-        print(f'in : {msg}')
+        print('in : {msg}', msg)
 
 output_midi.save('testing.mid')

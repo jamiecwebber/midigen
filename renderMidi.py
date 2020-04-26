@@ -11,8 +11,9 @@ import os
 
 
 # Create directory
-dirName = 'SpectraWithRests_dropsecondnotebyoctave'
+dirName = 'SpectraWithRests_test'
 noteNames = ['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'A#', 'B']
+print(dirName)
  
 try:
     # Create target Directory
@@ -32,7 +33,7 @@ for base in range(12):
 		base_freq = (base + 12) * 100
 		treble_freq = base_freq + interval * 100
 
-		spectral_array = mg.create_spectral_array(base_freq, treble_freq, 10, 1, 0.5)
+		spectral_array = mg.create_spectral_array(base_freq, treble_freq, 10, 1, 1)
 		print(spectral_array)
 		mg.make_spectral_arpeggio_midi(mid, spectral_array, 100, 1)
 		mg.add_rests_between_notes(arp_track, 100)
@@ -40,8 +41,9 @@ for base in range(12):
 		base_name = noteNames[base]
 		treble_name = noteNames[(base + interval) % 12]
 
-		file_name = f"{dirName}/{treble_name}_on_{base_name}.mid"
+		file_name = f'{dirName}/{treble_name}_on_{base_name}.mid'
 
+		print(file_name)
 		mid.save(file_name)
 
 

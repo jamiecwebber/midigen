@@ -11,7 +11,7 @@ from collections import deque
 from midigen import *
 from spectral_tools import *
 
-filename = 'improvfull'
+filename = 'dpliRLsaw'
 
 mid = MidiFile(f'{filename}.mid')
 output_midi = MidiFile(ticks_per_beat=960)
@@ -20,7 +20,7 @@ output_midi.tracks.append(midi_track)
 
 class Spectralizer():
     # processes each message of the MIDI
-    def __init__(self, cycle_channels = 8, n_back = 3):
+    def __init__(self, cycle_channels = 4, n_back = 4):
         self.dyad_note = None
         self.generator = None
         self.current_dyad = [None,None]
@@ -55,7 +55,7 @@ class Spectralizer():
         note_1, note_2 = note_1*100, note_2*100
         if note_1 > note_2:
             note_1, note_2 = note_2, note_1
-        self.generator = fib_gen_class(note_1, note_2, return_dyad=False)
+        self.generator = fib_gen_class(note_1, note_2, return_dyad=False, factor_1=1)
         self.backlog = [] # clear backlog
         print(self.generator)
     
@@ -128,10 +128,10 @@ class Spectralizer():
             spectral_note += 1200
         return spectral_note
     
-    def check_interval(self, spectral_note, given_note, interval=150):
-        # hardcoded value of 1.5 semitones of maximum adjustment
-        if given_note > spectral_note:
-            return False
+    def check_interval(self, spectral_note, given_note, interval=100):
+        # hardcoded value of +/- 1 semitone of maximum adjustment
+        #if given_note > spectral_note:
+        #    return False
         return abs(spectral_note - given_note) < interval
         
     
@@ -156,6 +156,6 @@ for i, track in enumerate(mid.tracks):
             print(f'out: {message}')
             midi_track.append(message)
 
-output_midi.save(f'{filename}-spec-3note-onlysharpen.mid')
+output_midi.save(f'{filename}-spec.mid')
             
 

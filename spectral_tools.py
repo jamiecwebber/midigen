@@ -63,22 +63,27 @@ def create_spectral_array(generator, number_of_overtones):
 def make_spectral_arpeggio_midi(midi_file, spectral_array, time_step, repetitions):
 	# midi_file must be pre-defined with two tracks
 
-	dyad_note_1 = mc_to_midi_and_pitchbend(spectral_array[0])
-	dyad_note_2 = mc_to_midi_and_pitchbend(spectral_array[1])
-	dyad_duration = (len(spectral_array)-2)*time_step*repetitions
-	dyad_track = midi_file.tracks[0]
-	arp_track = midi_file.tracks[1]
-	dyad_track.append(Message('note_on', note=dyad_note_1[0], time=0))
-	dyad_track.append(Message('note_on', note=dyad_note_2[0], time=0))
-	dyad_track.append(Message('note_off', note=dyad_note_1[0], time=dyad_duration))
-	dyad_track.append(Message('note_off', note=dyad_note_2[0], time=0))
+    dyad_note_1 = mc_to_midi_and_pitchbend(spectral_array[0])
+    dyad_note_2 = mc_to_midi_and_pitchbend(spectral_array[1])
+    dyad_duration = (len(spectral_array)-2)*time_step*repetitions
+    dyad_track = midi_file.tracks[0]
+    arp_track = midi_file.tracks[1]
+    dyad_track.append(Message('note_on', note=dyad_note_1[0], time=0))
+    dyad_track.append(Message('note_on', note=dyad_note_2[0], time=0))
+    dyad_track.append(Message('note_off', note=dyad_note_1[0], time=dyad_duration))
+    dyad_track.append(Message('note_off', note=dyad_note_2[0], time=0))
 
-	for repetition in range(0, repetitions):
-		for note in range(2, len(spectral_array)):
-			new_note = mc_to_midi_and_pitchbend(spectral_array[note])
-			arp_track.append(Message('pitchwheel', channel=note - 1, pitch=new_note[1], time=0))
-			arp_track.append(Message('note_on', channel=note - 1, note=new_note[0], time=0))
-			arp_track.append(Message('note_off', channel=note - 1, note=new_note[0], time=time_step))
+    for repetition in range(0, repetitions):
+        for note in range(2, len(spectral_array)):
+            new_note = mc_to_midi_and_pitchbend(spectral_array[note])
+            if new_note[0] < 128:
+                arp_track.append(Message('pitchwheel', channel=(note - 1)%12, pitch=new_note[1], time=0))
+                arp_track.append(Message('note_on', channel=(note - 1)%12, note=new_note[0], time=0))
+                arp_track.append(Message('note_off', channel=(note - 1)%12, note=new_note[0], time=time_step))
+
+
+
+
 
 def add_rests_between_notes(midi_track, rest_time):
 	first_note = True
